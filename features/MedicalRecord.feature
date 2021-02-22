@@ -94,9 +94,6 @@ Feature: medical record
         And confirm the removal 
         Then the exam is deleted from the system 
         And I remain on the page "Medical Record" of "Maria Eduarda"
-<<<<<<< HEAD
-        
-=======
     
     Scenario: edit exam file name
         Given I'm logged in as a doctor 
@@ -108,4 +105,3 @@ Feature: medical record
         And save the change 
         Then the file is updated on the system 
         And I receive a notification that the operation was successful
->>>>>>> 6a0ebf7 (scenario: edit file exam name - adicionado)

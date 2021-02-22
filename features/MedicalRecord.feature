@@ -81,4 +81,4 @@ Feature: medical record
         And "Carlos Eduardo" sends a Blood Test Exam through message 
         When I receive the exam file 
         And I request to save on patient's Medical Record  
-        Then the exam is saved on the system  
+        Then the exam file is saved on the system  

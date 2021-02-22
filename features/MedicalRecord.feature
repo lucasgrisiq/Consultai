@@ -82,3 +82,16 @@ Feature: medical record
         When I receive the exam file 
         And I request to save on patient's Medical Record  
         Then the exam file is saved on the system  
+        Then the exam is saved on the system 
+        And I remain on the exam file 
+    
+    Scenario: remove patient's exam 
+        Given I'm logged in as a doctor 
+        And "Maria Eduarda" is a patient of mine 
+        And I'm on the page "Medical Record" of "Maria Eduarda"
+        And I'm at the section "Exams"
+        When I request to remove "X-ray exam"
+        And confirm the removal 
+        Then the exam is deleted from the system 
+        And I remain on the page "Medical Record" of "Maria Eduarda"
+        

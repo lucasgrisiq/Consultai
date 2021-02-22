@@ -105,3 +105,14 @@ Feature: medical record
         And save the change 
         Then the file is updated on the system 
         And I receive a notification that the operation was successful
+    
+    Scenario: add updated patient's data 
+        Given "Marian Barbosa" is one of my patients
+        And I'm at the page "Medical Record" of the patient "Mariana Barbosa"
+        And the fields of the "Age", "Weight", "Height" are filled with "15", "50kg", "160cm"
+        When I select to update patient's data 
+        Then new fields of "Age", "Weight", "Height" appear on the section 
+        When I fill with "16", "60kg", "165cm"
+        And request to save and generate growth curves 
+        Then the growth curves are updated 
+        And the updated data is saved on the system 

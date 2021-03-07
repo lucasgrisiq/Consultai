@@ -1,118 +1,71 @@
 Feature: medical record
-    As a member of the doctor users
-    I want to add, remove and edit medical records for my patients
-    So that I can generate a complete medical record that helps me and other doctors towards the diagnosis of a specific patient
+    As membro do grupo de usuários médicos
+    I want adicionar diferentes tipos de prontuários e editá-los
+    So that consigo gerar um prontuário completo sobre meu paciente que ajude eu e outros médicos no diagnóstico e tratamento do paciente
 
-    Scenario: edit medical record
-        Given I'm logged in as a doctor
-        And I'm on the page "My Patients"
-        When I select the medical record of the patient "Lucas Grisi"
-        And I edit the "Weight" from "60kg" to "80kg"
-        And I save the edit 
-        Then the version edited is saved on the system 
-        And I receive a notification that the operation was successful
+    Scenario: adicionar atendimento
+        Given estou logado como médico
+        And estou na página "Meus pacientes"
+        And "Lucas Grisi" é meu paciente
+        When seleciono o paciente "Lucas Grisi"
+        And seleciono "adicionar atendimento"
+        Then sou direcionado para a aba de "Atendimentos" do paciente 
+        And preencho os campos de "Altura" e "Peso" com "175cm" e "70kg"
+        And na seção de "Queixas" preencho "QPD", "HDA" e "IS" com "Muita dor de cabeça e enjoo", "Durante 1 semana com sintomas" e "O que você está sentindo? Por quanto tempo? Alguém próximo está sentindo o mesmo?"
+        And na seção de "Antecedentes familiares e pessoais" preencho "Mãe já teve crise de enxaqueca por 2 anos"
+        And na seção de "Hipótese Diagnóstica" preencho "Virose comum"
+        And na seção de "Conduta" preencho "Uso de medicamento prescrito na receita"
+        When seleciono "Salvar"
+        Then o atendimento é salvo no sistema 
 
-    Scenario: generate growth curves
-        Given I'm logged in as a doctor 
-        And I'm on the page "Medical Record" of the patient "Gabriel"
-        And the data of the "Age", "Weight", "Height" are filled with "15", "50kg", "160cm"
-        And that's all the patients data 
-        When I request to generate growth curves
-        Then the OMS graphs of "weight x age", "imc x age", "stature x age" filled with "Gabriel's" data are displayed on the "Medical Record" page
-        And the growth curves are saved on the system
-        And I remain on the page "Medical Record" of patient "Gabriel"
-
-    Scenario: Contest, by chat, wrong data on patient's Medical Record
-        Given I'm logged in as a doctor 
-        And I'm on the page "Medical Record" of the patient "Carlos"
-        And I see the blood test file, on the section "Tests", attatched by "Dra Ana Maria"
-        And the test is from the patient "Lucas" 
-        When I request "contest by chat"
-        And I select the option "Wrong/inexistent file"
-        And I select "Blood test by Dra Ana Maria"
-        Then I'm redirected to a chat with "Dra Ana Maria"
-        And I can request the right file to her
-
-    Scenario: Contest, by email, wrong data on patient's Medical Record 
-        Given I'm logged in as a doctor 
-        And I'm on the page "Medical Record" of the patient "Carlos"
-        And I see the blood test file, on the section "Tests", attatched by "Dra Ana Maria"
-        And the test is from the patient "Lucas" 
-        When I request "contest by email"
-        And I select the option "Wrong/inexistent file"
-        And I select "Blood test by Dra Ana Maria"
-        Then I receive a notification that an automatic email was sent to "Dra Ana Maria"
-        And I remain on the page "Medical Record" of the patient "Carlos"
-
-    Scenario: edit medical record fail
-        Given I'm logged in as a doctor
-        And I'm on the page "My Patients"
-        When I select the medical record of the patient "Lucas Grisi"
-        And I edit the "Weight" from "60kg" to "eighty kilograms"
-        And I save the edit 
-        Then the record is not saved on the system 
-        And I receive an error notification "Wrong input on Weight field, please try again with a valid input."
-        And I remain on the page "Medical Record" of the patient "Lucas Grisi" 
+    Scenario: adicionar receita
+        Given estou logado como médico
+        And estou na página "Meus pacientes"
+        And "Lucas Grisi" é meu paciente
+        When seleciono o paciente "Lucas Grisi"
+        And seleciono a aba de "receitas"
+        And adiciono uma nova receita 
+        And preencho os campos de "Medicamento", "Uso", "Duração", "Quantidade" e "Frequencia" com "Tylenol","Oral","1 semana", "200mg", "8 em 8 horas"
+        And peço para adicionar 
+        Then a receita é salva no sistema 
+        And posso ver o histórico de receitas do paciente 
     
-    Scenario: generate growth curves fail
-        Given I'm logged in as a doctor 
-        And I'm on the page "Medical Record" of the patient "Gabriel"
-        And the fields of the "Age", "Weight", "Height" are filled not filled
-        When I request to generate growth curves
-        Then I receive an error message
-        And I remain on the page "Medical Record" of the patient "Gabriel"
+    Scenario: editar receita 
+        Given estou logado como médico
+        And estou na página "Meus pacientes"
+        And "Lucas Grisi" é meu paciente
+        And a receita do dia "02/01/2020" foi feita por mim
+        When seleciono o paciente "Lucas Grisi"
+        And seleciono a aba de "receitas"
+        And peço para editar a receita do dia "02/01/2020"
+        And edito o campo de "Frequencia" de "8 em 8 horas" para "6 em 6 horas" 
+        Then a nova versão da receita é salva no sistema
+    
+    Scenario: editar receita fail 
+        Given estou logado como médico
+        And estou na página "Meus pacientes"
+        And "Luís Albuquerque" é meu paciente 
+        When seleciono o paciente "Lucas Grisi"
+        And seleciono a aba de "receitas"
+        And peço para editar a receita do dia "03/03/2021"
+        Then recebo uma mensagem de erro sinalizando que apenas o autor da receita pode editá-la 
+        And continuo na aba de "receitas"
 
-    Scenario: add file  
-        Given I'm logged in as a doctor 
-        And I'm on the page "My Patients"
-        And I can see the patients who have a medical record 
-        When I go to the section "Add new patient"
-        And I select the patient "Lucas Grisi" 
-        And I request to add a Medical Record 
-        Then I'm redirected to the page "Medical Record" of the patient "Lucas Grisi"
-        When I add "X-ray Exam" on the "Exams and Images" section 
-        Then the exam is saved on the system 
-        And the medical record is saved on the system 
-        And I remain on the page "Medical Record" of the patient "Lucas Grisi"
+    Scenario: adicionar exame 
+        Given estou logado como médico
+        And estou na página "Meus pacientes"
+        And "Lucas Grisi" é meu paciente
+        When seleciono o paciente "Lucas Grisi"
+        And seleciono a aba de "exames"
+        And adiciono o exame "Raio-X.pdf" do meu computador 
+        Then o exame é adicionado no prontuário do paciente 
+        And posso ver o histórico de exames do paciente 
     
-    Scenario: receive patient's exam 
-        Given I'm logged in as a doctor 
-        And "Carlos Eduardo" is a patient of mine 
-        And "Carlos Eduardo" sends a Blood Test Exam through message 
-        When I receive the exam file 
-        And I request to save on patient's Medical Record  
-        Then the exam file is saved on the system  
-        Then the exam is saved on the system 
-        And I remain on the exam file 
-    
-    Scenario: remove patient's exam 
-        Given I'm logged in as a doctor 
-        And "Maria Eduarda" is a patient of mine 
-        And I'm on the page "Medical Record" of "Maria Eduarda"
-        And I'm at the section "Exams"
-        When I request to remove "X-ray exam"
-        And confirm the removal 
-        Then the exam is deleted from the system 
-        And I remain on the page "Medical Record" of "Maria Eduarda"
-    
-    Scenario: edit exam file name
-        Given I'm logged in as a doctor 
-        And "Lucas Grisi" is a patient of mine
-        And I'm on the section "Exam" of the page "Medical record" of "Lucas Grisi"
-        And the "ECG exam" was posted by me 
-        When I select to edit the "ECG exam"
-        And I change the file name to "Electrocardiogram"
-        And save the change 
-        Then the file is updated on the system 
-        And I receive a notification that the operation was successful
-    
-    Scenario: add updated patient's data 
-        Given "Marian Barbosa" is one of my patients
-        And I'm at the page "Medical Record" of the patient "Mariana Barbosa"
-        And the fields of the "Age", "Weight", "Height" are filled with "15", "50kg", "160cm"
-        When I select to update patient's data 
-        Then new fields of "Age", "Weight", "Height" appear on the section 
-        When I fill with "16", "60kg", "165cm"
-        And request to save and generate growth curves 
-        Then the growth curves are updated 
-        And the updated data is saved on the system 
+    Scenario: adicionar exame fail 
+        Given estou logado como médico
+        And estou na página "Meus pacientes"
+        And "Lucas Grisi" é meu paciente
+        When seleciono o paciente "Lucas Grisi"
+        And seleciono a aba de "exames"
+        And adiciono o exame "Raio-X.bat" do meu computador 
+        Then recebo um alerta de erro sobre o formato do arquivo
